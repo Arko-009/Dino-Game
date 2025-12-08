@@ -1,0 +1,76 @@
+#game {
+    width: 1300px;
+    height: 590px;
+    border: 3px solid black;
+    overflow: hidden;
+    position: relative;
+    background: url("./public/parallax_loop.gif");
+    background-size: cover;
+    margin: 0 auto;
+}
+
+#title {
+    background: linear-gradient(90deg, #c600ff, #0758ba);
+    color: transparent;
+    background-clip: text;
+    font-family: "Press Start 2P";
+    text-align: center;
+    font-size: 28px;
+    padding: 15px 0;
+    font-weight: bold;
+
+}
+
+#hud {
+    position: absolute;
+    display: flex;
+    gap: 200px;
+    padding: 20px 0px 0px 200px;
+}
+
+#dino {
+    width: 190px;
+    height: 230px;
+    position: absolute;
+    bottom: 0;
+    transition: left .5s ease;
+    
+}
+
+#obs {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 130px;
+
+}
+
+.data {
+    font-family: "Press Start 2P", monospace;
+    font-size: 14px;
+    color: #ffe400;
+    text-shadow: 2px 2px #000;
+    user-select: none;
+    transition: transform .15s;
+}
+
+#GO {
+    font-family: "Press Start 2P";
+    color: #3f3f89d8;
+}
+
+#gameover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+   z-index: -999;
+}
+#play{
+     position: absolute;
+    top: 35%;
+    left: 35%;
+    width: 300px;
+    z-index: 999 ;
+}

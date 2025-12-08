@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dragon Adventures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Dino.css">
+</head>
+
+<body>
+    <div id="title">Welcome to Dino-Runner</div>
+    <div id="game">
+        <img id="play" src="./public/play_button.png" alt="play" onclick="startGame()">
+        <div id="hud">
+            <div class="data">Time: <span id="time">0</span></div>
+            <div class="data">Score: <span id="score">0</span></div>
+            <div class="data">High Score: <span id="highscore">0</span></div>
+        </div>
+        <img id="dino" src="./public/dino_run_apng.png" alt="Dino">
+        <img id="obs" src="./public/blue_building_static.png">
+        <div id="gameover">
+            <h1 id="GO">| GAME OVER | </h1>
+            <img id="retry" src="./public/replay_rotating_fixed.apng" alt="retry">
+        </div>
+    </div>
+    
+    <script>
+        let Dino = document.getElementById("dino");
+        let Obs = document.getElementById("obs");
+        let gmover = document.getElementById("gameover");
+        let play = document.getElementById("play");
+        let Score = document.getElementById("score");
+        let Time = document.getElementById("time");
+        let Highestsc = document.getElementById("highscore");
+        let high = localStorage.getItem("highscore") ;
+        Highestsc.innerText = high;
+        const startsound = new Audio("./public/bleach_treachery_2.mp3");
+        const gamesound = new Audio("./public/bleach_treachery_2.mp3");
+        const endsound = new Audio("./public/mario_end.mp3");
+        let over = false;
+        let gameOn = false;
+        let scored = false;
+        let dinoX = 20;
+        let speed = 2800;
+        let timeInterval, collisionLoop;
+
+        function startGame() {
+            if (gameOn) return;
+            gameOn = true;
+            over = false;
+            scored = false;
+            speed = 2800;
+            dinoX = 20;
+            Score.innerText = 0;
+            Time.innerText = 0;
+            gmover.style.zIndex = -1;
+            play.style.display = "none";
+            Obs.style.right = "0px";
+            startsound.play();
+            gamesound.loop = true;
+            gamesound.play();
+            moveobs();
+            timeInterval = setInterval(Timeupdate, 100);
+            collisionLoop = setInterval(collision, 16);
+        }
+
+        function right() {
+            if (!gameOn || over) return;
+            dinoX += 70;
+            if (dinoX > 1100) dinoX = 1100;
+            Dino.style.left = dinoX + "px";
+        }
+        function left() {
+            if (!gameOn || over) return;
+            dinoX -= 70;
+            if (dinoX < 0) dinoX = 0;
+            Dino.style.left = dinoX + "px";
+        }
+        function jump() {
+            if (!gameOn || over) return;
+            Dino.style.bottom = "180px";
+            setTimeout(() => { Dino.style.bottom = "0px"; }, 700);
+        }
+
+        addEventListener("keydown", (event) => {
+            if (!gameOn || over) return;
+            if (event.code == "Space" || event.code == "ArrowUp") jump();
+            if (event.code == "ArrowRight") right();
+            if (event.code == "ArrowLeft") left();
+            if (event.code == "ArrowDown") Dino.style.bottom = 0;
+            if (event.code == "Enter") startGame();
+        });
+
+        function moveobs() {
+            if (!gameOn || over) return;
+
+            Obs.style.transition = "none";
+            Obs.style.right = "0px";
+          
+            setTimeout(() => {
+                if (!gameOn || over) return;
+                Obs.style.transition = `right ${speed / 1000}s linear`;
+                Obs.style.right = "1600px";
+                if (speed > 1000) speed -= 50;
+            }, 20);
+
+            setTimeout(moveobs, speed);
+        }
+
+        function Timeupdate() {
+            if (!gameOn || over) return;
+            let tcal = parseInt(Time.innerText);
+            tcal += 60;
+            Time.innerText = tcal;
+        }
+
+        function Scoreupdate() {
+            if (!gameOn || over) return;
+            let scal = parseInt(Score.innerText);
+            scal += 10;
+            Score.innerText = scal;
+            if (scal > high) {
+                high = scal;
+                localStorage.setItem("highscore", high);
+                Highestsc.innerText = high;
+            }
+        }
+
+        function collision() {
+            if (!gameOn || over) return;
+            const d = Dino.getBoundingClientRect();
+            const o = Obs.getBoundingClientRect();
+            const hit = d.right > o.left && d.left < o.right && d.bottom > o.top;
+
+            if (hit) {
+                gamesound.pause();
+                endsound.play();
+                Dino.src="./public/Dino_stopped.png";
+                over = true;
+                gameOn = false;
+                gmover.style.zIndex = 10;
+                let ox = parseInt(getComputedStyle(Obs).right);
+                Obs.style.transition = "none";
+                Obs.style.right = ox + "px";
+                clearInterval(timeInterval);
+                clearInterval(collisionLoop);
+                return;
+            }
+
+            if (!scored && o.right < d.left) {
+                Scoreupdate();
+                scored = true;
+            }
+            if (o.right < 0) {
+                scored = false;
+            }
+        }
+
+    </script>
+</body>
+
+</html>
