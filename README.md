@@ -7,7 +7,7 @@ Inspired by the classic offline Chrome dinosaur game, this project demonstrates 
 
 ## 🚀 Live Demo
 
-👉 https://your-live-link-here.com *(replace if needed)*
+👉 https://arko-009.github.io/Dino-Game/
 
 ---
 
